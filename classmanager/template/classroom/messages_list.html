@@ -1,0 +1,132 @@
+{% extends 'classroom/base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+  .message-card {
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .message-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .message-header {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .message-content {
+    padding: 1.25rem;
+    white-space: pre-wrap;
+  }
+  
+  .message-footer {
+    padding: 0.75rem 1.25rem;
+    background-color: #f8f9fa;
+    border-top: 1px solid #eee;
+  }
+  
+  .student-avatar {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  
+  .message-tag {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+    border-radius: 4px;
+    margin-left: 0.5rem;
+  }
+  
+  .replied-tag {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .new-tag {
+    background-color: #007bff;
+    color: white;
+  }
+</style>
+
+<div class="container">
+  <div class="jumbotron">
+    <h2 class="text-center mb-4">Inbox</h2>
+    
+    {% if teacher.messages.count == 0 %}
+      <div class="alert alert-info text-center">
+        <i class="fas fa-inbox fa-3x mb-3"></i>
+        <h4>No Messages Yet</h4>
+        <p>When students send you messages, they'll appear here.</p>
+      </div>
+    {% else %}
+      <div class="mb-4">
+        <div class="alert alert-primary">
+          <i class="fas fa-info-circle mr-2"></i>
+          You have <strong>{{ teacher.messages.count }}</strong> message(s) from your students.
+        </div>
+      </div>
+      
+      {% for mssg in teacher.messages.all %}
+        <div class="message-card">
+          <div class="message-header d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+              {% if mssg.student.student_profile_pic %}
+                <img src="{{ mssg.student.student_profile_pic.url }}" class="student-avatar mr-3">
+              {% else %}
+                <div class="student-avatar mr-3 bg-secondary d-flex align-items-center justify-content-center text-white">
+                  <span>{{ mssg.student.name|slice:":1" }}</span>
+                </div>
+              {% endif %}
+              
+              <div>
+                <h5 class="mb-0">{{ mssg.student.name }}</h5>
+                <small class="text-muted">{{ mssg.created_at|date:"F j, Y, g:i a" }}</small>
+              </div>
+            </div>
+            
+            {% if "[REPLIED]" in mssg.message %}
+              <span class="message-tag replied-tag">Replied</span>
+            {% else %}
+              <span class="message-tag new-tag">New</span>
+            {% endif %}
+          </div>
+          
+          <div class="message-content">
+            <p>{{ mssg.message_html|safe|striptags|truncatewords:100 }}</p>
+          </div>
+          
+          <div class="message-footer d-flex justify-content-between align-items-center">
+            <div>
+              <span class="badge badge-secondary">Student ID: {{ mssg.student.roll_no }}</span>
+            </div>
+            
+            <div>
+              {% if "[REPLIED]" not in mssg.message %}
+                <a href="{% url 'classroom:reply_message' message_id=mssg.id %}" class="btn btn-primary btn-sm">
+                  <i class="fas fa-reply mr-1"></i> Reply
+                </a>
+              {% else %}
+                <a href="{% url 'classroom:reply_message' message_id=mssg.id %}" class="btn btn-outline-primary btn-sm">
+                  <i class="fas fa-reply mr-1"></i> Reply Again
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

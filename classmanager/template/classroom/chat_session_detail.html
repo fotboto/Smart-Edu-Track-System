@@ -1,0 +1,189 @@
+{% extends 'classroom/base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 d-none d-md-block" style="background-color: #f5f5f5; min-height: 100vh; border-right: 1px solid #e0e0e0;">
+            <div class="p-3">
+                <h5 class="mb-3"><i class="fas fa-info-circle"></i> Session Info</h5>
+                <div class="mb-3">
+                    <strong>{{ chat_session.subject }}</strong>
+                    <div class="text-muted">Topic: {{ chat_session.topic }}</div>
+                </div>
+                
+                <div class="mb-3">
+                    <small>
+                        <i class="far fa-calendar-alt"></i> Started: {{ chat_session.created_at|date:"F j, Y" }}<br>
+                        <i class="far fa-clock"></i> Last active: {{ chat_session.last_activity|timesince }} ago
+                    </small>
+                </div>
+                
+                <div class="mb-3">
+                    {% if chat_session.status == 'active' %}
+                        <a href="{% url 'classroom:end_chat_session' session_id=chat_session.id %}" class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-times-circle"></i> End Session
+                        </a>
+                    {% endif %}
+                    
+                    <a href="{% url 'classroom:chat_sessions_list' %}" class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-list"></i> All Sessions
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Chat Container -->
+        <div class="col-md-9 col-12 px-0">
+            <!-- Top navbar for title -->
+            <div class="bg-primary text-white p-3 d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="fas fa-robot"></i> AI Tutor Chat</h4>
+                {% if chat_session.status == 'ended' %}
+                    <span class="badge badge-danger">Ended</span>
+                {% else %}
+                    <span class="badge badge-success">Active</span>
+                {% endif %}
+            </div>
+            
+            <!-- Chat message area -->
+            <div class="chat-area" style="height: calc(100vh - 190px); overflow-y: auto; padding: 20px; background-color: #f9f9f9;">
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.sender == 'student' %}
+                            <!-- Student Message (Right) -->
+                            <div class="mb-4 d-flex justify-content-end">
+                                <div style="max-width: 75%;">
+                                    <div class="bg-primary text-white p-3 rounded-lg" style="border-top-right-radius: 0;">
+                                        {{ message.content|linebreaks }}
+                                    </div>
+                                    <div class="text-muted small text-right mt-1">
+                                        You • {{ message.timestamp|date:"g:i a" }}
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <!-- AI Message (Left) -->
+                            <div class="mb-4 d-flex">
+                                <div class="mr-2">
+                                    <div class="rounded-circle d-flex justify-content-center align-items-center" style="width: 40px; height: 40px; background-color: #e0e0e0;">
+                                        <i class="fas fa-robot text-primary"></i>
+                                    </div>
+                                </div>
+                                <div style="max-width: 75%;">
+                                    <div class="bg-white p-3 rounded-lg shadow-sm" style="border-top-left-radius: 0;">
+                                        {{ message.content|linebreaks }}
+                                    </div>
+                                    <div class="text-muted small mt-1">
+                                        AI Tutor • {{ message.timestamp|date:"g:i a" }}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-info text-center my-5">
+                        <i class="fas fa-info-circle"></i> No messages yet. Start by asking a question below.
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Message input area -->
+            <div class="bg-white border-top p-3" style="position: absolute; bottom: 0; width: 100%;">
+                {% if chat_session.status == 'active' %}
+                    <form method="post" action="{% url 'classroom:send_chat_message' session_id=chat_session.id %}">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            {{ form.content }}
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                {% else %}
+                    <div class="alert alert-secondary text-center mb-0">
+                        <i class="fas fa-lock mr-2"></i> This session has ended. You can <a href="{% url 'classroom:new_chat_session' %}" class="alert-link">start a new session</a> or review this conversation.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Override navbar to be full-width for chat interface */
+    .navbar {
+        max-width: 100% !important;
+    }
+    
+    .container-fluid {
+        padding-left: 0;
+        padding-right: 0;
+        margin-top: -20px; /* Remove gap between navbar and content */
+    }
+    
+    /* ChatGPT-like styling */
+    .chat-area {
+        background-color: #f7f7f8;
+    }
+    
+    /* Custom form styling */
+    textarea.form-control {
+        border-radius: 20px;
+        padding: 10px 15px;
+        resize: none;
+        border: 1px solid #ddd;
+        height: 45px;
+        box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    }
+    
+    textarea.form-control:focus {
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        border-color: #80bdff;
+    }
+    
+    .input-group-append .btn {
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        padding: 0;
+        margin-left: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Custom scrollbar */
+    .chat-area::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    .chat-area::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+    
+    .chat-area::-webkit-scrollbar-thumb {
+        background: #ddd;
+        border-radius: 10px;
+    }
+    
+    .chat-area::-webkit-scrollbar-thumb:hover {
+        background: #bbb;
+    }
+</style>
+
+<script>
+    // Auto-scroll to bottom of chat on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatArea = document.querySelector('.chat-area');
+        chatArea.scrollTop = chatArea.scrollHeight;
+        
+        // Focus on textarea
+        const textarea = document.querySelector('textarea');
+        if (textarea) {
+            textarea.focus();
+        }
+    });
+</script>
+{% endblock %} 

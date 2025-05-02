@@ -1,0 +1,44 @@
+{% extends 'classroom/base.html' %}
+{% block content %}
+
+<div class="container">
+  <div class="jumbotron">
+    <h3 class="text-center">My Assignments</h3>
+    {% if assignments %}
+      <table class="table table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Assignment Name</th>
+            <th scope="col">Created At</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for assignment in assignments %}
+            <tr>
+              <th scope="row">{{ forloop.counter }}</th>
+              <td>{{ assignment.assignment_name }}</td>
+              <td>{{ assignment.created_at }}</td>
+              <td>
+                <a class="btn btn-primary btn-sm" href="{% url 'classroom:submit_assignment' id=assignment.id %}">
+                  <i class="fas fa-upload mr-1"></i> Submit
+                </a>
+                <a class="btn btn-info btn-sm" href="{{ assignment.assignment.url }}" target="_blank">
+                  <i class="fas fa-download mr-1"></i> Download
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="alert alert-info mt-4">
+        <h4 class="alert-heading">No Assignments Available</h4>
+        <p>You don't have any assignments assigned to you yet.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %} 

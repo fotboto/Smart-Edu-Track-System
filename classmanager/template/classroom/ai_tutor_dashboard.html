@@ -1,0 +1,131 @@
+{% extends 'classroom/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="jumbotron">
+        <h1 class="display-4">AI Tutor Dashboard</h1>
+        <p class="lead">Get personalized learning assistance with our AI-powered tutoring system</p>
+        <hr class="my-4">
+        <p>Ask questions about any subject and get instant, helpful responses to improve your understanding.</p>
+        <a class="btn btn-primary btn-lg" href="{% url 'classroom:new_chat_session' %}" role="button">Start New Session</a>
+        <a class="btn btn-outline-primary btn-lg" href="{% url 'classroom:chat_sessions_list' %}" role="button">View All Sessions</a>
+    </div>
+
+    <div class="row">
+        <!-- Active Sessions -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4><i class="fas fa-comment-dots"></i> Active Sessions</h4>
+                </div>
+                <div class="card-body">
+                    {% if active_sessions %}
+                        <div class="list-group">
+                            {% for session in active_sessions %}
+                                <a href="{% url 'classroom:chat_session_detail' session_id=session.id %}" class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ session.subject }}</h5>
+                                        <small>{{ session.last_activity|timesince }} ago</small>
+                                    </div>
+                                    <p class="mb-1">Topic: {{ session.topic }}</p>
+                                    <small>Started: {{ session.created_at|date:"F j, Y, g:i a" }}</small>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <p>You don't have any active tutoring sessions.</p>
+                            <a href="{% url 'classroom:new_chat_session' %}" class="btn btn-primary">Start a New Session</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Sessions -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h4><i class="fas fa-history"></i> Recent Sessions</h4>
+                </div>
+                <div class="card-body">
+                    {% if recent_sessions %}
+                        <div class="list-group">
+                            {% for session in recent_sessions %}
+                                <a href="{% url 'classroom:chat_session_detail' session_id=session.id %}" class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ session.subject }}</h5>
+                                        <small class="text-{% if session.is_active %}success{% else %}danger{% endif %}">
+                                            {% if session.is_active %}Active{% else %}Ended{% endif %}
+                                        </small>
+                                    </div>
+                                    <p class="mb-1">Topic: {{ session.topic }}</p>
+                                    <small>Last activity: {{ session.last_activity|date:"F j, Y, g:i a" }}</small>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <p>You haven't started any tutoring sessions yet.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tutoring Tips -->
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            <h4><i class="fas fa-lightbulb"></i> Tips for Better AI Tutoring</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-question-circle"></i> Ask Specific Questions</h5>
+                            <p class="card-text">The more specific your question, the more helpful the AI tutor can be.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-book-reader"></i> Review Your Sessions</h5>
+                            <p class="card-text">Go back to past sessions to reinforce your learning and see your progress.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-project-diagram"></i> Connect Concepts</h5>
+                            <p class="card-text">Try relating new topics to ones you already understand for better retention.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Start -->
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <h4><i class="fas fa-rocket"></i> Quick Start: Chat with AI</h4>
+        </div>
+        <div class="card-body">
+            <p class="lead">Start a new session on any of these popular subjects:</p>
+            <div class="d-flex flex-wrap justify-content-center">
+                <a href="{% url 'classroom:new_chat_session' %}?subject=Mathematics" class="btn btn-outline-primary m-2">Mathematics</a>
+                <a href="{% url 'classroom:new_chat_session' %}?subject=Science" class="btn btn-outline-success m-2">Science</a>
+                <a href="{% url 'classroom:new_chat_session' %}?subject=English" class="btn btn-outline-info m-2">English</a>
+                <a href="{% url 'classroom:new_chat_session' %}?subject=History" class="btn btn-outline-warning m-2">History</a>
+                <a href="{% url 'classroom:new_chat_session' %}?subject=Computer Science" class="btn btn-outline-danger m-2">Computer Science</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %} 

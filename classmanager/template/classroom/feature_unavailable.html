@@ -1,0 +1,76 @@
+{% extends 'classroom/base.html' %}
+{% block content %}
+
+<style>
+    .feature-unavailable {
+        text-align: center;
+        padding: 60px 20px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        color: #dc3545;
+    }
+    
+    .feature-title {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        color: #343a40;
+    }
+    
+    .feature-message {
+        margin-bottom: 30px;
+        color: #666;
+        font-size: 1.1rem;
+    }
+    
+    .alternative-box {
+        background-color: #f8f9fa;
+        border-left: 4px solid #007bff;
+        padding: 15px;
+        margin-bottom: 30px;
+        text-align: left;
+        border-radius: 0 4px 4px 0;
+    }
+    
+    .alternative-heading {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #007bff;
+    }
+    
+    .alternative-text {
+        color: #666;
+        margin-bottom: 0;
+    }
+    
+    .btn-back {
+        margin-top: 15px;
+    }
+</style>
+
+<div class="container">
+    <div class="feature-unavailable">
+        <div class="feature-icon">
+            <i class="fas fa-tools"></i>
+        </div>
+        
+        <h2 class="feature-title">{{ feature_name }} is currently unavailable</h2>
+        
+        <p class="feature-message">{{ message }}</p>
+        
+        <div class="alternative-box">
+            <h5 class="alternative-heading">Alternative</h5>
+            <p class="alternative-text">{{ alternative }}</p>
+        </div>
+        
+        <a href="{% url 'home' %}" class="btn btn-primary btn-back">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Home
+        </a>
+    </div>
+</div>
+
+{% endblock %} 

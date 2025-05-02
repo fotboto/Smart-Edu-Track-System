@@ -1,0 +1,44 @@
+{% extends 'classroom/base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h3><i class="fas fa-exclamation-triangle"></i> End Tutoring Session?</h3>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Are you sure you want to end this tutoring session?</h5>
+                    
+                    <div class="alert alert-warning">
+                        <p><strong>Session Details:</strong></p>
+                        <ul>
+                            <li><strong>Subject:</strong> {{ session.subject }}</li>
+                            <li><strong>Topic:</strong> {{ session.topic }}</li>
+                            <li><strong>Started:</strong> {{ session.created_at|date:"F j, Y, g:i a" }}</li>
+                        </ul>
+                    </div>
+                    
+                    <p>You can view the session history even after ending it, but you won't be able to ask new questions in this session.</p>
+                    
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% url 'classroom:chat_session_detail' session_id=session.id %}" class="btn btn-outline-secondary btn-lg">
+                            <i class="fas fa-arrow-left"></i> Cancel
+                        </a>
+                        
+                        <form method="POST" action="{% url 'classroom:end_chat_session' session_id=session.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-lg">
+                                <i class="fas fa-door-open"></i> End Session
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %} 

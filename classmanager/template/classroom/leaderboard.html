@@ -1,0 +1,362 @@
+{% extends 'classroom/base.html' %}
+{% block content %}
+
+<style>
+    .leaderboard-container {
+        width: 100%;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .leaderboard-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    
+    .leaderboard-header h2 {
+        color: #333;
+        font-size: 2.2rem;
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+    
+    .leaderboard-header p {
+        color: #666;
+        font-size: 1.1rem;
+    }
+    
+    .top-performers {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+    }
+    
+    .trophy-card {
+        width: 200px;
+        height: 250px;
+        margin: 0 20px;
+        border-radius: 10px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .trophy-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    }
+    
+    .trophy-card-1 {
+        background: linear-gradient(45deg, #FFD700, #FFC107);
+        z-index: 3;
+        height: 280px;
+    }
+    
+    .trophy-card-2 {
+        background: linear-gradient(45deg, #C0C0C0, #E0E0E0);
+        margin-top: 30px;
+        z-index: 2;
+    }
+    
+    .trophy-card-3 {
+        background: linear-gradient(45deg, #CD7F32, #D2691E);
+        margin-top: 30px;
+        z-index: 1;
+    }
+    
+    .position-indicator {
+        font-size: 48px;
+        font-weight: 800;
+        color: rgba(255,255,255,0.5);
+        margin-top: 20px;
+    }
+    
+    .trophy-card-1 .position-indicator {
+        color: rgba(255,255,255,0.7);
+    }
+    
+    .avatar-container {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background-color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 10px 0;
+        border: 3px solid white;
+        overflow: hidden;
+    }
+    
+    .avatar-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f0f0f0;
+        color: #666;
+        font-size: 32px;
+        font-weight: bold;
+    }
+    
+    .student-name {
+        font-weight: 600;
+        color: white;
+        margin: 10px 0 5px;
+        text-align: center;
+        padding: 0 10px;
+    }
+    
+    .student-score {
+        color: white;
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+    }
+    
+    .student-percentage {
+        background-color: rgba(255,255,255,0.2);
+        color: white;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+    
+    .trophy-icon {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        font-size: 1.8rem;
+        color: rgba(255,255,255,0.7);
+    }
+    
+    .ranking-table {
+        width: 100%;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    
+    .ranking-table thead th {
+        background: #3f51b5;
+        color: white;
+        font-weight: 600;
+        padding: 15px;
+    }
+    
+    .ranking-table tbody tr {
+        border-bottom: 1px solid #f0f0f0;
+        transition: background-color 0.2s ease;
+    }
+    
+    .ranking-table tbody tr:hover {
+        background-color: #f5f7fa;
+    }
+    
+    .ranking-table td {
+        padding: 15px;
+        vertical-align: middle;
+    }
+    
+    .rank-number {
+        font-weight: 700;
+        width: 50px;
+        text-align: center;
+    }
+    
+    .top-rank {
+        color: #FFD700;
+    }
+    
+    .percentage-bar {
+        height: 8px;
+        background-color: #e0e0e0;
+        border-radius: 4px;
+        overflow: hidden;
+        width: 100%;
+    }
+    
+    .percentage-fill {
+        height: 100%;
+        border-radius: 4px;
+        background-color: #4CAF50;
+    }
+    
+    .weak-performance .percentage-fill {
+        background-color: #F44336;
+    }
+    
+    .average-performance .percentage-fill {
+        background-color: #FF9800;
+    }
+    
+    .good-performance .percentage-fill {
+        background-color: #4CAF50;
+    }
+    
+    .excellent-performance .percentage-fill {
+        background-color: #2196F3;
+    }
+    
+    .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+        text-align: center;
+    }
+    
+    .empty-state i {
+        font-size: 3rem;
+        color: #dadada;
+        margin-bottom: 20px;
+    }
+    
+    .empty-state h3 {
+        color: #666;
+        margin-bottom: 10px;
+    }
+    
+    .empty-state p {
+        color: #999;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+    
+    @media (max-width: 768px) {
+        .top-performers {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .trophy-card {
+            margin: 15px 0;
+            height: 230px;
+        }
+        
+        .trophy-card-1 {
+            height: 230px;
+            margin-top: 0;
+        }
+        
+        .trophy-card-2, .trophy-card-3 {
+            margin-top: 15px;
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="jumbotron">
+        <div class="leaderboard-container">
+            <div class="leaderboard-header">
+                <h2>Class Leaderboard</h2>
+                <p>See how students are performing based on their average marks percentage</p>
+            </div>
+            
+            {% if entries %}
+                {% if top_students %}
+                <div class="top-performers">
+                    {% for entry in top_students %}
+                        {% if forloop.counter == 2 %}
+                            <div class="trophy-card trophy-card-2">
+                                <div class="position-indicator">2</div>
+                                <div class="avatar-container">
+                                    <div class="avatar-placeholder">{{ entry.student.name|slice:":1" }}</div>
+                                </div>
+                                <h5 class="student-name">{{ entry.student.name }}</h5>
+                                <div class="student-score">Score: {{ entry.total_score }}</div>
+                                <div class="student-percentage">{{ entry.avg_percentage }}%</div>
+                                <div class="trophy-icon"><i class="fas fa-medal"></i></div>
+                            </div>
+                        {% endif %}
+                        
+                        {% if forloop.counter == 1 %}
+                            <div class="trophy-card trophy-card-1">
+                                <div class="position-indicator">1</div>
+                                <div class="avatar-container">
+                                    <div class="avatar-placeholder">{{ entry.student.name|slice:":1" }}</div>
+                                </div>
+                                <h5 class="student-name">{{ entry.student.name }}</h5>
+                                <div class="student-score">Score: {{ entry.total_score }}</div>
+                                <div class="student-percentage">{{ entry.avg_percentage }}%</div>
+                                <div class="trophy-icon"><i class="fas fa-trophy"></i></div>
+                            </div>
+                        {% endif %}
+                        
+                        {% if forloop.counter == 3 %}
+                            <div class="trophy-card trophy-card-3">
+                                <div class="position-indicator">3</div>
+                                <div class="avatar-container">
+                                    <div class="avatar-placeholder">{{ entry.student.name|slice:":1" }}</div>
+                                </div>
+                                <h5 class="student-name">{{ entry.student.name }}</h5>
+                                <div class="student-score">Score: {{ entry.total_score }}</div>
+                                <div class="student-percentage">{{ entry.avg_percentage }}%</div>
+                                <div class="trophy-icon"><i class="fas fa-award"></i></div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <div class="ranking-table-container">
+                    <table class="ranking-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Student</th>
+                                <th>Score</th>
+                                <th>Percentage</th>
+                                <th>Progress</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in entries %}
+                            <tr>
+                                <td class="rank-number {% if entry.rank <= 3 %}top-rank{% endif %}">
+                                    {% if entry.rank <= 3 %}
+                                        <i class="fas {% if entry.rank == 1 %}fa-trophy{% elif entry.rank == 2 %}fa-medal{% else %}fa-award{% endif %}"></i>
+                                    {% else %}
+                                        {{ entry.rank }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ entry.student.name }}</td>
+                                <td>{{ entry.total_score }}</td>
+                                <td>{{ entry.avg_percentage }}%</td>
+                                <td style="width:30%">
+                                    <div class="percentage-bar">
+                                        <div class="percentage-fill 
+                                            {% if entry.avg_percentage < 40 %}weak-performance
+                                            {% elif entry.avg_percentage < 60 %}average-performance
+                                            {% elif entry.avg_percentage < 80 %}good-performance
+                                            {% else %}excellent-performance{% endif %}"
+                                            style="width: {{ entry.avg_percentage }}%">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>No Leaderboard Data Yet</h3>
+                    <p>Once students receive marks, they will appear on this leaderboard. Start by adding marks to see student rankings!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %} 

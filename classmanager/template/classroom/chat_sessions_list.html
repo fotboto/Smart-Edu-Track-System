@@ -1,0 +1,137 @@
+{% extends 'classroom/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="jumbotron">
+        <h1 class="display-4">Your AI Tutoring Sessions</h1>
+        <p class="lead">Review your active and past tutoring sessions</p>
+        <hr class="my-4">
+        <p>Each session is saved so you can return to it later or review what you've learned.</p>
+        <a class="btn btn-primary btn-lg" href="{% url 'classroom:new_chat_session' %}" role="button">Start New Session</a>
+        <a class="btn btn-outline-secondary btn-lg" href="{% url 'classroom:ai_tutor_dashboard' %}" role="button">Back to Dashboard</a>
+    </div>
+
+    <!-- Active Sessions -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h3><i class="fas fa-comments"></i> Active Sessions</h3>
+        </div>
+        <div class="card-body">
+            {% if active_sessions %}
+                <div class="row">
+                    {% for session in active_sessions %}
+                        <div class="col-md-6">
+                            <div class="card mb-3 border-primary">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">{{ session.subject }}</h5>
+                                    <span class="badge badge-success">Active</span>
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-subtitle mb-2 text-muted">Topic: {{ session.topic }}</h6>
+                                    <p class="card-text">
+                                        <small>
+                                            <i class="far fa-calendar-alt"></i> Started: {{ session.created_at|date:"F j, Y" }}<br>
+                                            <i class="far fa-clock"></i> Last active: {{ session.last_activity|timesince }} ago<br>
+                                            <i class="far fa-comments"></i> Messages: {{ session.message_count }}
+                                        </small>
+                                    </p>
+                                    <div class="d-flex justify-content-between">
+                                        <a href="{% url 'classroom:chat_session_detail' session_id=session.id %}" class="btn btn-primary">
+                                            <i class="fas fa-comments"></i> Continue Session
+                                        </a>
+                                        <a href="{% url 'classroom:end_chat_session' session_id=session.id %}" class="btn btn-outline-danger">
+                                            <i class="fas fa-times-circle"></i> End Session
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info text-center">
+                    <p>You don't have any active tutoring sessions.</p>
+                    <a href="{% url 'classroom:new_chat_session' %}" class="btn btn-primary">Start a New Session</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Ended Sessions -->
+    <div class="card mb-4">
+        <div class="card-header bg-secondary text-white">
+            <h3><i class="fas fa-history"></i> Past Sessions</h3>
+        </div>
+        <div class="card-body">
+            {% if ended_sessions %}
+                <div class="row">
+                    {% for session in ended_sessions %}
+                        <div class="col-md-6">
+                            <div class="card mb-3 border-secondary">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">{{ session.subject }}</h5>
+                                    <span class="badge badge-secondary">Ended</span>
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-subtitle mb-2 text-muted">Topic: {{ session.topic }}</h6>
+                                    <p class="card-text">
+                                        <small>
+                                            <i class="far fa-calendar-alt"></i> Date: {{ session.created_at|date:"F j, Y" }}<br>
+                                            <i class="far fa-comments"></i> Messages: {{ session.message_count }}<br>
+                                            <i class="far fa-clock"></i> Last activity: {{ session.last_activity|date:"g:i a" }}
+                                        </small>
+                                    </p>
+                                    <a href="{% url 'classroom:chat_session_detail' session_id=session.id %}" class="btn btn-secondary">
+                                        <i class="fas fa-search"></i> Review Session
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <p>You don't have any past tutoring sessions.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Learning Tips -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h3><i class="fas fa-graduation-cap"></i> Learning Tips</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-sync-alt"></i> Review Past Sessions</h5>
+                            <p class="card-text">Regularly reviewing your past tutoring sessions can help reinforce what you've learned and identify areas that need more focus.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-puzzle-piece"></i> Combine Learning Methods</h5>
+                            <p class="card-text">Use AI tutoring alongside other resources like assignments, video lectures, and class notes for a more comprehensive understanding.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-lightbulb"></i> Ask Follow-up Questions</h5>
+                            <p class="card-text">If the AI tutor's explanation isn't clear, don't hesitate to ask follow-up questions or request simpler explanations.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %} 

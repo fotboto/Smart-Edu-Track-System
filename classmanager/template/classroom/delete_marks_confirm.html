@@ -1,0 +1,53 @@
+{% extends 'classroom/base.html' %}
+{% block content %}
+
+<div class="container">
+<div class="jumbotron">
+  <div class="text-center mb-5">
+    <div class="alert alert-danger">
+      <h2>Confirm Deletion</h2>
+      <p>Are you sure you want to delete the following marks?</p>
+    </div>
+  </div>
+  
+  <div class="card mb-4">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">Marks Details</h5>
+    </div>
+    <div class="card-body">
+      <table class="table table-bordered">
+        <tr>
+          <th style="width: 30%">Student Name</th>
+          <td>{{ marks.student.name }}</td>
+        </tr>
+        <tr>
+          <th>Subject</th>
+          <td>{{ marks.subject_name }}</td>
+        </tr>
+        <tr>
+          <th>Marks Obtained</th>
+          <td>{{ marks.marks_obtained }}</td>
+        </tr>
+        <tr>
+          <th>Maximum Marks</th>
+          <td>{{ marks.maximum_marks }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  
+  <div class="d-flex justify-content-center">
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger mr-3">
+        <i class="fas fa-trash-alt mr-1"></i> Confirm Delete
+      </button>
+      <a href="{% url 'classroom:student_marks_list' pk=marks.student.pk %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left mr-1"></i> Cancel
+      </a>
+    </form>
+  </div>
+</div>
+</div>
+
+{% endblock %} 

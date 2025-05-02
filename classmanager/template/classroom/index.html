@@ -1,0 +1,101 @@
+{% extends 'classroom/base.html' %}
+{% load static %}
+{% block content %}
+
+{% if messages %}
+<div class="alert alert-primary alert-dismissible fade show" role="alert">
+  {% for message in messages %}
+    <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %}">{{ message|safe }}</div>
+  {% endfor %}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% endif %}
+
+<div class="banner">
+      <img src="{% static 'images/first.PNG' %}" alt="">
+      <div class="content">
+        <h1>Smart EDu Track System</h1>
+        <p>A Comprehensive Learning Management System</p>
+      </div>
+    </div>
+
+    <div class="about">
+      <h1>About Us</h1>
+      <p>Smart EDu Track System is an advanced learning management platform designed to streamline education in today's digital world. Our system offers a comprehensive suite of tools for academic management, communication, and performance tracking. With Smart EDu Track System, educators can efficiently monitor student progress while students gain access to organized learning resources and real-time feedback. Our platform emphasizes data-driven education to help identify strengths and areas for improvement, creating a more personalized and effective learning experience for everyone.</p>
+    </div>
+
+    <div class="use-content">
+      <h1>Our Services</h1>
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <div class="box">
+            <div class="imgBx">
+              <img src="{% static 'images/teacher.PNG' %}" alt="">
+            </div>
+            <div class="content">
+              <h3>For Educators</h3>
+              <ol>
+                <li><strong>Smart Class Management</strong> - Add, organize, and manage students with our intuitive dashboard.</li>
+                <li><strong>Performance Analytics</strong> - Track student progress with comprehensive grading and assessment tools.</li>
+                <li><strong>Communication Hub</strong> - Share important announcements with targeted class notices and direct messaging.</li>
+                <li><strong>Academic Calendar</strong> - Organize schedules with our shared calendar and attachment support.</li>
+                <li><strong>Assignment Management</strong> - Create, distribute, and evaluate assignments with centralized tracking.</li>
+                <li><strong>Feedback System</strong> - Review student submissions and provide constructive feedback effectively.</li>
+                <li><strong>Data Insights</strong> - Access detailed reports to identify learning trends and opportunities.</li>
+                <li><strong>Customizable Profile</strong> - Personalize your teaching workspace for optimal productivity.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="box">
+            <div class="imgBx">
+              <img src="{% static 'images/homeimg.PNG' %}" alt="">
+            </div>
+            <div class="content">
+              <h3>For Students</h3>
+              <ol>
+                <li><strong>Learning Dashboard</strong> - Access all course materials, assignments, and notifications in one place.</li>
+                <li><strong>Assignment Tracker</strong> - View, download, and submit assignments with automated deadline reminders.</li>
+                <li><strong>Academic Calendar</strong> - Stay organized with a comprehensive view of important academic dates and events.</li>
+                <li><strong>Performance Insights</strong> - Monitor your grades and progress with visual analytics.</li>
+                <li><strong>Direct Communication</strong> - Connect with teachers through secure messaging for personalized support.</li>
+                <li><strong>Class Notices</strong> - Receive important announcements and updates from instructors.</li>
+                <li><strong>Resource Library</strong> - Access educational materials and resources shared by teachers.</li>
+                <li><strong>Personalized Profile</strong> - Customize your account settings and learning preferences.</li>
+              </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="research">
+      <div class="row">
+        <div class="col-md-4">
+          <img src="{% static 'images/mastery-based-education.PNG' %}" alt="">
+        </div>
+        <div class="col-md-8">
+          <div class="digital-content">
+            <h2>Innovative Digital Learning</h2>
+            <br>
+            <p>In today's rapidly evolving educational landscape, technology has become an essential component of effective teaching and learning. Smart EDu Track System embraces modern pedagogical approaches by integrating data analytics, personalized learning paths, and collaborative tools. Our platform is designed based on research from thousands of educational institutions worldwide, incorporating best practices in digital education to enhance engagement, improve outcomes, and prepare students for success in an increasingly digital world.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="social">
+      <h1>Transform Your Educational Experience</h1>
+      <h3>Join the Smart EDu Track System community and be part of the future of education</h3>
+      <p class="mb-4">Connect with us on social media for updates, educational resources, and success stories</p>
+      <a class="social-icon" href="#"><i class="fab fa-facebook-f"></i></a>
+      <a class="social-icon" href="#"><i class="fab fa-twitter"></i></a>
+      <a class="social-icon" href="#"><i class="fab fa-instagram"></i></a>
+      <a class="social-icon" href="#"><i class="fab fa-linkedin-in"></i></a>
+      <a class="social-icon" href="#"><i class="fab fa-youtube"></i></a>
+    </div>
+
+{% endblock %}

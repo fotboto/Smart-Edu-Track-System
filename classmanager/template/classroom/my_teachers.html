@@ -1,0 +1,63 @@
+{% extends 'classroom/base.html' %}
+{% block content %}
+
+<div class="container">
+  <div class="jumbotron">
+    <h2 class="text-center mb-4">My Teachers</h2>
+    
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Teachers who have added you to their class</h5>
+      </div>
+      <div class="card-body">
+        <p class="text-muted">These teachers have added you to their class and can assign you work, view your submissions, and give you marks.</p>
+      </div>
+    </div>
+    
+    {% if teachers_list %}
+      <div class="row">
+        {% for teacher in teachers_list %}
+          <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+              <div class="card-header bg-light">
+                <h5 class="mb-0">{{ teacher.name }}</h5>
+                <small class="text-muted">{{ teacher.subject_name }}</small>
+              </div>
+              <div class="card-body">
+                <div class="d-flex mb-3">
+                  {% if teacher.teacher_profile_pic %}
+                    <img src="{{ teacher.teacher_profile_pic.url }}" alt="{{ teacher.name }}" class="rounded-circle mr-3" style="width: 64px; height: 64px; object-fit: cover;">
+                  {% else %}
+                    <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mr-3" style="width: 64px; height: 64px;">
+                      <span style="font-size: 1.5rem;">{{ teacher.name|slice:":1" }}</span>
+                    </div>
+                  {% endif %}
+                  <div>
+                    <p><i class="fas fa-envelope mr-2"></i> {{ teacher.email }}</p>
+                    <p><i class="fas fa-phone mr-2"></i> {{ teacher.phone }}</p>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between mt-3">
+                  <a href="{% url 'classroom:teacher_detail' pk=teacher.pk %}" class="btn btn-outline-primary">
+                    <i class="fas fa-user mr-1"></i> View Profile
+                  </a>
+                  <a href="{% url 'classroom:write_message' pk=teacher.pk %}" class="btn btn-primary">
+                    <i class="fas fa-paper-plane mr-1"></i> Send Message
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="alert alert-info text-center">
+        <i class="fas fa-info-circle fa-2x mb-3"></i>
+        <h4>No Teachers Found</h4>
+        <p>You haven't been added to any teacher's class yet.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %} 

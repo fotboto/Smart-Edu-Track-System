@@ -1,0 +1,85 @@
+{% extends 'classroom/base.html' %}
+{% block content %}
+
+<div class="container">
+  <div class="jumbotron">
+    {% if messages %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {% for message in messages %}
+        <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %}">{{ message|safe }}</div>
+      {% endfor %}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endif %}
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3>Assignments & Submissions</h3>
+    <a href="{% url 'classroom:class_students_list' %}" class="btn btn-secondary">
+      <i class="fas fa-arrow-left mr-1"></i> Back to Students
+    </a>
+  </div>
+
+  <!-- Always show assigned students and marks section -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">Student Marks</h5>
+    </div>
+    <div class="card-body">
+      <p>You can view and manage marks for students in your class.</p>
+      <a href="{% url 'classroom:class_students_list' %}" class="btn btn-primary">View Student Marks</a>
+    </div>
+  </div>
+
+{% if teacher.teacher_submit.count == 0 %}
+  <div class="card">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">Assignment Submissions</h5>
+    </div>
+    <div class="card-body">
+      <div class="text-center py-3">
+        <p class="text-muted mb-3">No assignment submissions available yet</p>
+        <div>
+          <a href="{% url 'classroom:upload_assignment' %}" class="btn btn-primary">Create Assignment</a>
+          <a href="{% url 'classroom:class_students_list' %}" class="btn btn-secondary ml-2">View Students</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% else %}
+  <div class="card">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">Assignment Submissions</h5>
+    </div>
+    <div class="card-body">
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Submitted By</th>
+            <th scope="col">Assignment</th>
+            <th scope="col">Submitted on</th>
+            <th scope="col">Download</th>
+            <th scope="col">Enter Marks</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for submission in teacher.teacher_submit.all %}
+            <tr>
+              <th scope="row">{{ forloop.counter }}</th>
+              <td>{{ submission.student.name }}</td>
+              <td>{{ submission.submitted_assignment.assignment_name }}</td>
+              <td>{{ submission.created_at }}</td>
+              <td><a href="{{ submission.submit.url }}" class="btn btn-primary" target="_blank">Download</a></td>
+              <td> <a class="btn btn-danger"  href="{% url 'classroom:enter_marks' pk=submission.student.pk %}">Enter Marks</a> </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endif %}
+</div>
+</div>
+{% endblock %}

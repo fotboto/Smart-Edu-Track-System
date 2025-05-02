@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Smart EDu Track System</title>
+    <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/searchbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/newbase.css' %}">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Source+Sans+Pro&display=swap" rel="stylesheet">
+
+    {% load bootstrap4 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript jquery='full' %}
+  </head>
+  <body>
+
+    <nav>
+      <div class="toggle">
+        <a href="{% url 'home' %}">Smart EDu Track System</a>
+        <i class="fa fa-bars menu"></i>
+      </div>
+    </nav>
+    <div class="sidebar">
+      <ul>
+        {% if user.is_authenticated %}
+        {% if user.is_teacher%}
+          <li> <a href="{% url 'classroom:upload_assignment' %}">Upload Assignment</a> </li>
+          <li> <a href="{% url 'classroom:assignment_list' %}">Assignment list</a> </li>
+          <li> <a href="{% url 'classroom:submit_list' %}">View Submissions</a> </li>
+          <li> <a href="{% url 'classroom:students_list' %}">All Students List</a> </li>
+          <li> <a href="{% url 'classroom:class_students_list' %}">Class Students List</a> </li>
+          <li> <a href="{% url 'classroom:write_notice' %}">Write Notice</a> </li>
+          <li> <a href="{% url 'classroom:calendar_list' %}">Academic Calendar</a> </li>
+          <li> <a href="{% url 'classroom:messages_list' pk=user.pk %}">Inbox</a> </li>
+          <li> <a href="{% url 'classroom:teacher_detail' pk=user.pk %}">Profile</a> </li>
+          {% else %}
+          <li> <a href="{% url 'classroom:student_assignment' %}">My Assignments</a> </li>
+          <li> <a href="{% url 'classroom:class_assignment' %}">Class Assignment</a> </li>
+          <li> <a href="{% url 'classroom:my_teachers' %}">My Teachers</a> </li>
+          <li> <a href="{% url 'classroom:all_marks_list' pk=user.pk %}">Marks List</a> </li>
+          <li> <a href="{% url 'classroom:class_notice' pk=user.pk %}">My Notice</a> </li>
+          <li> <a href="{% url 'classroom:calendar_list' %}">Academic Calendar</a> </li>
+          <li> <a href="{% url 'classroom:student_detail' pk=user.pk %}">Profile</a> </li>
+          {% endif %}
+          <li> <a href="{% url 'classroom:logout' %}">Logout</a> </li>
+          <li> <a href="{% url 'classroom:change_password' %}">Change Password</a> </li>
+          {% else %}
+          <li><a class="head-left" href="{% url 'classroom:login' %}">Login</a></li>
+          <li><a class="head-left" href="{% url 'classroom:signup' %}">Sign Up</a></li>
+        {% endif %}
+      </ul>
+    </div>
+
+      {% block content %}
+      {% endblock %}
+
+
+      <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+      <script type="text/javascript">
+        $(document).ready(function(){
+          $('.menu').click(function(){
+            $('ul').toggleClass('active');
+          })
+        })
+      </script>
+
+      <!-- Scroll to Top Button -->
+      <button id="scrollToTopBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
+
+      <script>
+        // Scroll to top button functionality
+        const scrollToTopBtn = document.getElementById("scrollToTopBtn");
+        
+        // Show the button when the user scrolls down 300px from the top
+        window.onscroll = function() {
+          const scrollPosition = document.body.scrollTop || document.documentElement.scrollTop;
+          
+          if (scrollPosition > 300) {
+            scrollToTopBtn.style.display = "block";
+            scrollToTopBtn.classList.add("show");
+            
+            // Change button color based on scroll position
+            if (scrollPosition > 1200) {
+              scrollToTopBtn.classList.add("deep-scroll");
+            } else {
+              scrollToTopBtn.classList.remove("deep-scroll");
+            }
+          } else {
+            scrollToTopBtn.classList.remove("show");
+            setTimeout(function() {
+              if (!scrollToTopBtn.classList.contains("show")) {
+                scrollToTopBtn.style.display = "none";
+              }
+            }, 300);
+          }
+        };
+        
+        // Scroll to the top when the button is clicked with smooth scrolling
+        scrollToTopBtn.addEventListener("click", function() {
+          // Smooth scroll to top
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        });
+      </script>
+
+  </body>
+</html>
